@@ -43,8 +43,6 @@ class Base(Building):
         
     
         
-        
-        
 class Tour(Building):
     def __init__(self,x0,y0,height = 48, width = 32, lifeMax = 100):
         
