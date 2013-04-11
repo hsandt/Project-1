@@ -3,10 +3,7 @@
 import os
 import pygame
 import globals
-
-
-NB_CASES_PER_ROW = 20
-NB_CASES_PER_COL = 10
+from globals import NB_SQUARES_PER_ROW, NB_SQUARES_PER_COL
 
 class Map(pygame.sprite.Group):
     "generation de la map à parir du fichier txt, methode associee"
@@ -37,9 +34,9 @@ class Map(pygame.sprite.Group):
             index = 0
             currentSpriteTerrain = None
 
-            while ligne<10:
+            while ligne < NB_SQUARES_PER_COL:
                 current_line=fs.readline()
-                while colonne<20:
+                while colonne < NB_SQUARES_PER_ROW:
                     index = current_line[colonne]
                     currentSpriteTerrain = SpriteTerrain(pygame.image.load(self.dico[index]),colonne,ligne)
                     self.add(currentSpriteTerrain)
