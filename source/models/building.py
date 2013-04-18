@@ -38,14 +38,14 @@ class Base(Building):
     def __init__(self,x0,y0,height = 48, width = 64, lifeMax = 1000):
         
         Building.__init__(self,x0,y0,height,width,lifeMax = 1000)
-        self.image = load_image('Cochon.png')[0].convert()
+        self.image = load_image('Cochon.png').convert()
         self.image.set_colorkey((255,255,255))
         
 class Tour(Building):
     def __init__(self,x0,y0,height = 48, width = 32, lifeMax = 100):
         
         Building.__init__(self,x0,y0,height,width,lifeMax = 1000)
-        self.image = load_image('fleurs.png')[0].convert()
+        self.image = load_image('pitching_machine_demo.png').convert()
         self.image.set_colorkey((255,255,255))
         
         

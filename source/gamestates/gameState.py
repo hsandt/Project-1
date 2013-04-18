@@ -2,7 +2,7 @@
 import pygame
 import globals
 from models import map, character, projectile, building
-from constants import NB_SQUARES_PER_ROW, NB_SQUARES_PER_COL, SQUARE_SIDE
+from globals import NB_SQUARES_PER_ROW, NB_SQUARES_PER_COL, SQUARE_SIDE
 
 class GameContext:
 	"""Context dans le state design pattern"""
@@ -36,6 +36,7 @@ class GameContext:
 class GameState:
 	"""State dans le state design pattern"""
 	def __init__(self):
+		"""initialise les variables propres au gamestate"""
 		# à remplacer par des raise errors
 		print("cannot instanciate abstract class!")
 
@@ -53,22 +54,22 @@ class GameState:
 
 class MenuState(GameState):
 	"""ConcreteStateA dans le state design pattern"""
+
 	def __init__(self):
-		pass
+		# initialise la font du menu start
+		self.font = pygame.font.Font(None, 60)
 
 	def on_enter(self):
+		# est-ce correct de créer cette variable (quand on entre pour la première fois dans le menu) ici ?
 		self.keyPressed = {'up': False, 'down': False, 'left': False, 'right': False, 'start': False, 'exit': False}
 
 	def handle_events(self):
 		for event in pygame.event.get():
-			# print event
 			self.keyPressed['start'] = event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
-
 			self.keyPressed['exit'] = event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
 
 	def update(self):
 		if self.keyPressed['start']:
-			# print "start pressed!"
 			return 'action'
 
 		if self.keyPressed['exit']:
@@ -77,7 +78,12 @@ class MenuState(GameState):
 		return 'keep'
 
 	def render(self, screen):
-		screen.fill((0,0,0))		
+		screen.fill((0,0,0))
+		label1 = self.font.render("Game on!! (press Space)", True, (255, 255, 255), (0, 0, 0))
+		label1_rect = label1.get_rect()
+		label1_rect.centerx = screen.get_rect().centerx
+		label1_rect.y = 500
+		screen.blit(label1, label1_rect)
 
 class ActionState(GameState):
 	"""ConcreteStateB dans le state design pattern"""
@@ -90,7 +96,7 @@ class ActionState(GameState):
 		globals.map = map.Map('map.txt')
 
 		# création du hero
-		globals.hero = character.Character(image_path = 'charset1.png', position = [50, 50], max_life = 0, atk = 0, max_speed = 2)
+		globals.hero = character.Character('charset1.png', position = [50, 50], max_life = 0, atk = 0, max_speed = 2)
 		
 		# création du dragon
 		globals.balles=pygame.sprite.Group()
@@ -107,7 +113,6 @@ class ActionState(GameState):
 
 	def handle_events(self):
 		for event in pygame.event.get():
-			# print event
 			is_key_down = True if event.type == pygame.KEYDOWN else False
 
 			# on détecte l'appui sur la touche de tir (pour l'instant, fréquence = FPS !!)
@@ -133,7 +138,7 @@ class ActionState(GameState):
 		globals.hero.update()
 		globals.balles.update()
 		if globals.keyPressed['debug shoot']:
-			globals.towers.sprites()[0].shoot(0)
+			globals.towers.sprites()[0].shoot(2)
 
 		# en cas d'exit, on revient d'abord au menu
 		if globals.keyPressed['menu']:
@@ -149,4 +154,6 @@ class ActionState(GameState):
 		globals.towers.draw(screen)
 		screen.blit(globals.hero.image,globals.hero.position)
 		screen.blit(globals.base.image,globals.base.rect)
-		
+		#debug
+		# print(globals.hero.direction)
+		# screen.blit(globals.hero.animation[0][0],(100,100))
