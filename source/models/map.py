@@ -65,5 +65,3 @@ class SpriteTerrain(pygame.sprite.Sprite):
         self.image=image.convert()
         self.rect=pygame.Rect(i*32,j*32,32,32)
 
-
-

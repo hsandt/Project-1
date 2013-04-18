@@ -7,16 +7,14 @@ import globals
 from gamestates.gameState import GameContext, GameState, MenuState, ActionState
 
 def main():
-	"""initialise pygame, l'Ã©cran, le game context, puis lance la boucle de jeu
+	"""initialise les modeles puis gere les evenements et construit la vue dans une boucle
 
 	"""
 	pygame.init()
-	# globals.init()
+	
+	screen = pygame.display.set_mode((NB_SQUARES_PER_ROW * SQUARE_SIDE, NB_SQUARES_PER_COL * SQUARE_SIDE))
 
-	# dÃ©finition de l'Ã©cran de par sa taille : sera modifiÃ©e plus tard
-	screen = pygame.display.set_mode((globals.NB_SQUARES_PER_ROW * globals.SQUARE_SIDE, globals.NB_SQUARES_PER_COL * globals.SQUARE_SIDE))
-
-	# test game states
+	# Création du game context et des games states associés 
 	gc = GameContext()
 
 	clock = pygame.time.Clock()
@@ -24,7 +22,7 @@ def main():
 		gc.handle_events()
 		next_state = gc.update()
 		gc.render(screen)
-		pygame.display.flip()
+		pygame.display.flip()       #a placer après le changement éventuel de gamestate  
 
 		if not next_state == "keep":
 			# quitter si la valeur de renvoi Ã©tait nulle
@@ -34,5 +32,6 @@ def main():
 			gc.change_state(next_state)
 
 		clock.tick(globals.FPS)
+		# pygame.display.flip()
 	
 if __name__ == '__main__': main()

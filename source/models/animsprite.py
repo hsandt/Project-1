@@ -42,7 +42,6 @@ class AnimatedSprite(sprite.Sprite):
         clip_rect_list = [Rect(sprite_width * i, sprite_height * j, sprite_width, sprite_height) for j in range(nb_sprites_j) for i in range(nb_sprites_i)]
         sprite_list = [self.spritesheet.subsurface(clip_rect) for clip_rect in clip_rect_list]
         self.animation_dict = {animation_name: (sprite_list[animation_info['start']:animation_info['end']+1], animation_info['duration']) for animation_name, animation_info in animation_info_hash.iteritems()}
-        print self.animation_dict
         self.change_animation(init_animation_name) # animation en cours (marche haut, attaque droite...)
         self.sprite_index = 0 # numéro du sprite en cours dans cette animation
         self.image = self.animation[0][self.sprite_index] # le premier élement du couple self.animation est la liste de sprites en jeu
@@ -53,18 +52,15 @@ class AnimatedSprite(sprite.Sprite):
 
         # si on commence à 0, la durée est 0, ce qui signifie qu'on travaille avec un seul sprite
         if self.time != 0:
-            print(self.time)
             self.time -= 1
             if self.time == 0:
                 self.time = self.animation[1]
                 self.sprite_index = (self.sprite_index + 1) % len(self.animation[0])
-                print('change!')
                 self.image = self.animation[0][self.sprite_index]
 
     def change_animation(self, animation_name):
         """Change l'animation en cours"""
         self.animation = self.animation_dict[animation_name]
         self.sprite_index = 0 # on pourra éventuellement garder l'indice courant dans certains cas (personnage volant qui tourne...)
-        print(self.animation)
         self.image = self.animation[0][self.sprite_index]
         self.time = self.animation[1] # on relance le décompte
