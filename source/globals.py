@@ -13,8 +13,6 @@ CHARACTER_HEIGHT = 48 # hauteur d'un personnage
 # variables globales
 hero = None
 keyPressed = {'up': False, 'down': False, 'left': False, 'right': False} # maybe shouldn't be global, rather passed as parameter
-hero = None
-map = None
 obstacle = None
 
 # game = {

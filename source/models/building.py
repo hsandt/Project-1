@@ -2,7 +2,7 @@
 
 import pygame
 import globals
-from . import projectile
+from . import projectile, character
 from helper.loaders import load_image
 
 
@@ -35,12 +35,23 @@ class Building(pygame.sprite.Sprite):
     
 
 class Base(Building):
-    def __init__(self,x0,y0,height = 48, width = 64, lifeMax = 1000):
+    def __init__(self,x0,y0,height = 48, width = 64, lifeMax = 1000, period = 120):
         
         Building.__init__(self,x0,y0,height,width,lifeMax = 1000)
         self.image = load_image('Cochon.png').convert()
         self.image.set_colorkey((255,255,255))
-        
+        self.period = period
+        self.gene_time = period
+        self.gene_pos = (x0 + 20, y0 + 5)
+
+    def update(self):
+        self.gene_time -= 1
+        if self.gene_time == 0:
+            self.gene_time = self.period
+            self.generate_enemy()
+
+    def generate_enemy(self):
+        enemy = character.Enemy((self.gene_pos))
     
         
 class Tour(Building):

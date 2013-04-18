@@ -98,6 +98,9 @@ class ActionState(GameState):
 		# création du hero
 		globals.hero = character.Character('charset1.png', position = [50, 50], max_life = 0, atk = 0, max_speed = 2)
 		
+		# création de la liste des ennemis
+		globals.enemies = pygame.sprite.Group()
+
 		# création du dragon
 		globals.balles=pygame.sprite.Group()
 
@@ -137,6 +140,7 @@ class ActionState(GameState):
 		# print "update action"
 		globals.hero.update()
 		globals.balles.update()
+		globals.base.update()
 		if globals.keyPressed['debug shoot']:
 			globals.towers.sprites()[0].shoot(2)
 
@@ -152,6 +156,7 @@ class ActionState(GameState):
 		globals.map.draw(screen) # Group method: rects for blitting are precised in the sprites of the group
 		globals.balles.draw(screen)
 		globals.towers.draw(screen)
+		globals.enemies.draw(screen)
 		screen.blit(globals.hero.image,globals.hero.position)
 		screen.blit(globals.base.image,globals.base.rect)
 		#debug

@@ -107,9 +107,7 @@ class Character(AnimatedSprite):
             self.rect.move_ip(direction[0], direction[1])
 
             # réinitialiser l'anim seulement si on a changé de direction ou si on se MET à marcher
-            print(str(self.state) + ' from ' + self.direction + ' to ' + new_direction)
             if self.direction != new_direction or self.state == 0:
-                print ('change direction')
                 self.direction = new_direction
                 self.change_animation(self.direction + '_walk')
                 
@@ -140,6 +138,14 @@ class Character(AnimatedSprite):
 
         cible = []
         return cible
+
+class Enemy(Character):
+    """Ennemi robot"""
+
+    def __init__(self, position):
+        Character.__init__(self, "charset2.png", position, 80, 20, 2)
+        globals.enemies.add(self) # à mettre dans le gamestate
+        print(globals.enemies)
 
 class Ghost(pg.sprite.Sprite):
     """Classe du ghost qui sert à détecter les collisions"""
