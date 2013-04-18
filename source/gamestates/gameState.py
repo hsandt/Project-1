@@ -115,7 +115,7 @@ class ActionState(GameState):
 		globals.map = map.Map('map.txt')
 
 		# crÃ©ation du hero
-		globals.hero = character.Character('charset1.png', position = [50, 50], max_life = 0, atk = 0, max_speed = 2)
+		globals.hero = character.Hero(name = "héros", position = [50, 50])
 		
 		# crÃ©ation de la liste des ennemis
 		globals.enemies = pygame.sprite.Group()
@@ -157,6 +157,7 @@ class ActionState(GameState):
 	def update(self):
 		"""actualisation des composants affichés à l'écran, détermination et renvoi du gamestate suivant"""
 		globals.hero.update()
+		globals.enemies.update()
 		globals.balles.update()
 		globals.base.update()
 		if globals.keyPressed['debug shoot']:

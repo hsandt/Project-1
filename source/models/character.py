@@ -8,7 +8,7 @@ from animsprite import AnimatedSprite
 class Character(AnimatedSprite):
     """Personnage : sprite animé pouvant se déplacer"""
     
-    def __init__(self, spritesheet_name, position, max_life, atk, max_speed) :
+    def __init__(self, name, spritesheet_name, position, max_life, atk, max_speed) :
         
         animation_info_hash = {
             'down_idle': {'start': 0, 'end': 0, 'duration': 0},
@@ -22,6 +22,7 @@ class Character(AnimatedSprite):
         }
         AnimatedSprite.__init__(self, spritesheet_name, globals.CHARACTER_WIDTH, globals.CHARACTER_HEIGHT, animation_info_hash, 'down_idle')
 
+        self.name = name
         self.position = position
         self.direction = 'down'
         self.rect = pg.rect.Rect(position[0], position[1], globals.CHARACTER_WIDTH, globals.CHARACTER_HEIGHT) # will change
@@ -38,10 +39,10 @@ class Character(AnimatedSprite):
     def update(self):
         
         # peut-être déplacer plus de traitement du côté handle_event
-        vertical_move = 1 if globals.keyPressed['down'] else -1 if globals.keyPressed['up'] else 0
-        horizontal_move = 1 if globals.keyPressed['right'] else -1 if globals.keyPressed['left'] else 0
+        horizontal_move, vertical_move = self.get_next_move()
+
         if vertical_move != 0 or horizontal_move != 0:
-            globals.hero.move((horizontal_move, vertical_move))
+            self.move((horizontal_move, vertical_move))
         else:
             self.state = 0 # on passe en idle
             self.change_animation(self.direction + '_idle')
@@ -85,21 +86,15 @@ class Character(AnimatedSprite):
         # a ghost character is created... is it worthy?
         ghost = Ghost(self.position[0] + direction[0], self.position[1] + direction[1])
         
+        print(self.name + " va tester ghost")
+
         if len(pg.sprite.spritecollide(ghost, globals.obstacle, False))!=0:
             return
         
         new_x = self.position[0] + direction[0]
         new_y = self.position[1] + direction[1]
-        
-        # t=self.cpt%20
-        # if t<6:
-        #     self.sprite_animation = 0
-        # elif t<12:
-        #     self.sprite_animation = 1
-        # elif t<18:
-        #     self.sprite_animation = 2
-        # else:
-        #     self.sprite_animation = 3
+
+        print(self.name + " va tester direction")
         
         if collision != True:
 
@@ -189,6 +184,10 @@ class Character(AnimatedSprite):
 
 # >>>>>>> 99de76719a12894c43a89756bf448b449e09b61d
 
+    def get_next_move(self):
+        """Renvoie la direction du mouvement sur cet update"""
+        print("� pr�ciser en classe concr�te !")
+
     def reset_state(self):
                             
         if self.state != 0:
@@ -224,13 +223,31 @@ class Character(AnimatedSprite):
         cible = []
         return cible
 
+class Hero(Character):
+    """Hero"""
+
+    def __init__(self, name, position, max_life = 100, atk = 10, max_speed = 2):
+        Character.__init__(self, name, "charset1.png", position, max_life, atk, max_speed)
+
+
+    def get_next_move(self):
+        """Renvoie la direction du mouvement sur cet update"""
+        vertical_move = 1 if globals.keyPressed['down'] else -1 if globals.keyPressed['up'] else 0
+        horizontal_move = 1 if globals.keyPressed['right'] else -1 if globals.keyPressed['left'] else 0
+        return (horizontal_move, vertical_move)
+
+
 class Enemy(Character):
     """Ennemi robot"""
 
-    def __init__(self, position):
-        Character.__init__(self, "charset2.png", position, 80, 20, 2)
+    def __init__(self, name, position):
+        Character.__init__(self, name, "charset2.png", position, 80, 20, 2)
         globals.enemies.add(self) # à mettre dans le gamestate
         print(globals.enemies)
+
+    def get_next_move(self):
+        """Renvoie la direction du mouvement sur cet update"""
+        return (0,1)
 
 class Ghost(pg.sprite.Sprite):
     """Classe du ghost qui sert à détecter les collisions"""

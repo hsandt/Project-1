@@ -12,7 +12,7 @@ def main():
 	"""
 	pygame.init()
 	
-	screen = pygame.display.set_mode((NB_SQUARES_PER_ROW * SQUARE_SIDE, NB_SQUARES_PER_COL * SQUARE_SIDE))
+	screen = pygame.display.set_mode((globals.NB_SQUARES_PER_ROW * globals.SQUARE_SIDE, globals.NB_SQUARES_PER_COL * globals.SQUARE_SIDE))
 
 	# Création du game context et des games states associés 
 	gc = GameContext()

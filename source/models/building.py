@@ -5,6 +5,8 @@ import globals
 from . import projectile, character
 from helper.loaders import load_image
 
+import math
+
 
 class Building(pygame.sprite.Sprite):
     """Classe mère des bâtiments"""
@@ -40,9 +42,11 @@ class Base(Building):
         Building.__init__(self,x0,y0,height,width,lifeMax = 1000)
         self.image = load_image('Cochon.png')
         self.image.set_colorkey((255,255,255))
+
+
         self.period = period
         self.gene_time = period
-        self.gene_pos = (x0 + 20, y0 + 5)
+        self.gene_pos = (x0 + 20, y0 + 65)
 
     def update(self):
         self.gene_time -= 1
@@ -51,7 +55,7 @@ class Base(Building):
             self.generate_enemy()
 
     def generate_enemy(self):
-        enemy = character.Enemy((self.gene_pos))
+        enemy = character.Enemy(name = "enemy", position = (self.gene_pos))
     
         
 class Tour(Building):
