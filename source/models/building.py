@@ -38,7 +38,7 @@ class Base(Building):
     def __init__(self,x0,y0,height = 48, width = 64, lifeMax = 1000, period = 120):
         
         Building.__init__(self,x0,y0,height,width,lifeMax = 1000)
-        self.image = load_image('Cochon.png').convert()
+        self.image = load_image('Cochon.png')
         self.image.set_colorkey((255,255,255))
         self.period = period
         self.gene_time = period
@@ -58,16 +58,12 @@ class Tour(Building):
     def __init__(self,x0,y0,height = 48, width = 32, lifeMax = 100):
         
         Building.__init__(self,x0,y0,height,width,lifeMax = 1000)
-        self.image = load_image('pitching_machine_demo.png').convert()
+        self.image = load_image('pitching_machine_demo.png')
         self.image.set_colorkey((255,255,255))
         
         
     def shoot(self, angle):
         
-        globals.balles.add(projectile.Balle(self.rect.centerx, self.rect.centery, angle))
+        globals.balles.add(projectile.Balle(self.rect.centerx+30*math.cos(angle), self.rect.centery-30*math.sin(angle), angle))
         
         
-        
-        
-    
-

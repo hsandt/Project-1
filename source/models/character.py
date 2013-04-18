@@ -32,6 +32,9 @@ class Character(AnimatedSprite):
         self.aim = 0 # "angle" de vis√© de l'entit√©
         # self.cpt = 1000
 
+
+
+
     def update(self):
         
         # peut-√™tre d√©placer plus de traitement du c√¥t√© handle_event
@@ -53,6 +56,9 @@ class Character(AnimatedSprite):
             self.aim = angle
             self.state = 1
             #Penser √† modifier l'image du perso
+  
+  
+  
         
 
     def get_env(self):
@@ -62,9 +68,15 @@ class Character(AnimatedSprite):
         return env
 
 
+
+
+
     def collision(self, direction, env):
         """D√©tecte"""
         return pg.sprite.spritecollide
+   
+   
+   
     
     def move(self, direction, collision = False):
         """D√©place l'entit√© d'une case dans la direction choisie(tableau de 2 entiers contenus dans {-1; 0; 1})
@@ -113,10 +125,77 @@ class Character(AnimatedSprite):
                 
                 self.state = 1 # on passe en walk
 
+# =======
+#     def move(self, direction):
+        
+#         collision = False
+        
+#         ghost = Character(image_path = None, position = [self.position[0] + direction[0], self.position[1] + direction[1]], max_life=1, atk=1, max_speed=1)
+        
+#         if len(pg.sprite.spritecollide(ghost, globals.obstacle, False))!=0:
+#             #return     problËme : arrËte le personnage sur son image courante
+            
+#             collision = True
+            
+#             #Affiche un personnage ‡ l'arrÍt
+#             #self.cpt = 0 
+        
+        
+        
+#         new_x = self.position[0]
+#         new_y = self.position[1]
+                
+#         if collision==False:
+#             """D√©place l'entit√© d'une case dans la direction choisie(tableau de 2 entiers contenus dans {-1; 0; 1})
+#             si le test de collision renvoi False"""
+#             new_x = self.position[0] + direction[0]
+#             new_y = self.position[1] + direction[1]
+            
+#         #dÈterminition quant la colonne du sprite ‡ afficher
+#         t=self.cpt%40
+#         if t<10:
+#             self.j_image = 0
+#         elif t<20:
+#             self.j_image = 1
+#         elif t<30:
+#             self.j_image = 2
+#         else:
+#             self.j_image = 3
+
+#         #dÈterminition de la ligne du sprite ‡ afficher
+#         if direction[1]>0:
+#             #self.image = self.images[0][0]
+#             self.i_image = 0
+                
+#         elif direction[0]<0:
+#             #self.image = self.images[1][0]
+#             self.i_image = 1
+#         elif direction[0]>0:
+#             #self.image = self.images[2][0]
+#             self.i_image = 2
+#         elif direction[1]<0:
+#             #self.image = self.images[3][0]
+#             self.i_image = 3
+        
+        
+#         #actualisation de la position et du sprite affichÈ        
+#         self.position = [new_x, new_y]
+#         # print("moves to: ", self.position)
+# ##        print("image charg√©e : ", ind, frame)
+#         self.rect.move_ip(direction[0], direction[1])
+#         self.state = 1
+#         self.image = self.images[self.i_image][self.j_image]
+
+
+# >>>>>>> 99de76719a12894c43a89756bf448b449e09b61d
+
     def reset_state(self):
                             
         if self.state != 0:
             self.state = 0
+
+
+
 
     def attack(self):
         """Renvoi une liste avec coordonn√©es de la case vers laquelle le personnage attaque
@@ -129,9 +208,15 @@ class Character(AnimatedSprite):
         self.state = 2
         return [cible, pt_atk]
 
+
+
+
     def hurt(self, pnj_atk):
         self.life -= pnj_atk
         self.state = 3
+
+
+
 
     def construct(self):
         """Construit une tour dans la case adjacente dans la direction de vis√©e, renvoi les coordonn√©es de la case o√π l'on souhaite construire"""

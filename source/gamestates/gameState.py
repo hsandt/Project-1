@@ -5,7 +5,13 @@ from models import map, character, projectile, building
 from globals import NB_SQUARES_PER_ROW, NB_SQUARES_PER_COL, SQUARE_SIDE
 
 class GameContext:
-	"""Context dans le state design pattern"""
+	"""
+	Context dans le state design pattern
+	
+	attributs :
+	   _self.states : stocke une instance de chaque état de jeu possible
+	   _self.state : état du jeu en cours 
+	"""
 
 	def __init__(self):
 		""""""
@@ -16,22 +22,25 @@ class GameContext:
 		self.change_state('action')
 
 	def change_state(self, state_name):
-		""""""
-		# print "changed state to " + str(state_name)
+		"""change l'état de jeu courant"""
 		self.state = self.states[state_name]
 		self.state.on_enter()
 
 	def handle_events(self):
-		""""""
+		"""appel à la méthode du self.state courant"""
 		self.state.handle_events()
 
 	def update(self):
-		""""""
+		"""appel à la méthode du self.state courant; actualisation des composants affichés à l'écran, détermination et renvoi du gamestate suivant"""
 		return self.state.update()
 
 	def render(self, screen):
-		""""""
+		"""appel à la méthode du self.state courant"""
 		self.state.render(screen)
+
+
+
+
 
 class GameState:
 	"""State dans le state design pattern"""
@@ -47,10 +56,14 @@ class GameState:
 		print("maybe we should put the common handling here!")
 
 	def update(self):
+		"""actualisation des composants affichés à l'écran, détermination et renvoi du gamestate suivant"""
 		print("cannot update abstract gamestate!")
 
 	def render(self, screen):
 		print("cannot render abstract gamestate!")
+
+
+
 
 class MenuState(GameState):
 	"""ConcreteStateA dans le state design pattern"""
@@ -65,10 +78,12 @@ class MenuState(GameState):
 
 	def handle_events(self):
 		for event in pygame.event.get():
-			self.keyPressed['start'] = event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
-			self.keyPressed['exit'] = event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+			self.keyPressed['start'] = (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE)
+
+			self.keyPressed['exit'] = (event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE)
 
 	def update(self):
+		"""actualisation des composants affichés à l'écran, détermination et renvoi du gamestate suivant"""
 		if self.keyPressed['start']:
 			return 'action'
 
@@ -84,6 +99,10 @@ class MenuState(GameState):
 		label1_rect.centerx = screen.get_rect().centerx
 		label1_rect.y = 500
 		screen.blit(label1, label1_rect)
+
+
+
+
 
 class ActionState(GameState):
 	"""ConcreteStateB dans le state design pattern"""
@@ -118,7 +137,7 @@ class ActionState(GameState):
 		for event in pygame.event.get():
 			is_key_down = True if event.type == pygame.KEYDOWN else False
 
-			# on dÃ©tecte l'appui sur la touche de tir (pour l'instant, frÃ©quence = FPS !!)
+			# on dÃ©tecte l'appui sur la touche de tir (fonction temporaire, les tirs seront générés automatiquement par la suite)
 			globals.keyPressed['debug shoot'] = is_key_down and event.key == pygame.K_SPACE
 
 			# on dÃ©tecte les entrÃ©es et sorties de l'Ã©tat "appuyÃ©e" pour chaque touche directionnelle
@@ -134,19 +153,17 @@ class ActionState(GameState):
 
 			# on dÃ©tecte la touche de sortie
 			globals.keyPressed['menu'] = event.type == pygame.QUIT or is_key_down and event.key == pygame.K_ESCAPE
-			# print "keyPressed is " + str(globals.keyPressed['menu'])
 
 	def update(self):
-		# print "update action"
+		"""actualisation des composants affichés à l'écran, détermination et renvoi du gamestate suivant"""
 		globals.hero.update()
 		globals.balles.update()
 		globals.base.update()
 		if globals.keyPressed['debug shoot']:
-			globals.towers.sprites()[0].shoot(2)
+			globals.towers.sprites()[0].shoot(3.1415/5)
 
 		# en cas d'exit, on revient d'abord au menu
 		if globals.keyPressed['menu']:
-			# print "will return menu"
 			return "menu"
 		return "keep"
 

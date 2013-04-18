@@ -6,6 +6,8 @@ import math
 
 from random import randrange
 from helper.loaders import load_image
+from globals import NB_SQUARES_PER_ROW, NB_SQUARES_PER_COL, SQUARE_SIDE
+import globals # garder un des deux...
 
 class Projectile(pygame.sprite.Sprite):
     """Classe mère des projectiles"""
@@ -21,9 +23,28 @@ class Projectile(pygame.sprite.Sprite):
         if self.cpt == 0:
             self.kill()
             return
-        x=(self.rect.left+self.vit*math.cos(self.aim))%500
-        y=(self.rect.top-self.vit*math.sin(self.aim))%500
-        self.rect = pygame.Rect(x,y,8,8)
+
+        
+        #test de collision
+        ghost = pygame.sprite.Sprite()
+        
+        deltaX = self.vit*math.cos(self.aim)
+        ghost.rect = pygame.Rect(self.rect.left+deltaX,self.rect.top,8,8)
+        if len(pygame.sprite.spritecollide(ghost, globals.obstacle, False))!=0:
+            self.aim = (3.1416 - self.aim)
+        
+        deltaY = -self.vit*math.sin(self.aim)
+        ghost.rect = pygame.Rect(self.rect.left,self.rect.top+deltaY,8,8)
+        if len(pygame.sprite.spritecollide(ghost, globals.obstacle, False))!=0:
+            self.aim = -self.aim
+            
+
+        
+        x=(self.rect.left+self.vit*math.cos(self.aim))%(NB_SQUARES_PER_ROW*SQUARE_SIDE)
+        y=(self.rect.top-self.vit*math.sin(self.aim))%(NB_SQUARES_PER_COL*SQUARE_SIDE)
+        
+        self.rect=pygame.Rect(x,y,8,8)
+
         self.switchSprite()
         
     def switchSprite(self):
@@ -36,6 +57,7 @@ class Balle(Projectile):
     def __init__(self, x0, y0, angle0):
         
         Projectile.__init__(self,x0,y0,angle0)
+<<<<<<< HEAD
         self.vit = 6
         self.cpt = 1000
         self.nb_sprites = 4 # temp
@@ -45,6 +67,14 @@ class Balle(Projectile):
         self.sprites = [self.spritesheet.subsurface(clip_rect) for clip_rect in clip_rect_tab]
         self.image = self.sprites[0]
         self.sprite_index = 0 # désigne le numéro du sprite en cours
+=======
+        self.vit = 6
+        self.cpt = 1000
+        
+        self.spritesheet = load_image('baseballs_demo.png', colorkey = -1)
+        clip_rect_tab = [pygame.Rect(6*i, 0, 6, 6) for i in range(self.nb_sprites)] 
+        self.sprites = [self.spritesheet.subsurface(clip_rect) for clip_rect in clip_rect_tab]
+        self.image = self.sprites[0]
         
     def switchSprite(self):
         t = self.cpt % 16
