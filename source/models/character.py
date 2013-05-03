@@ -1,8 +1,9 @@
-# -*-coding:Latin-1 -*
+ï»¿# -*-coding:Latin-1 -*
 
 import pygame as pg
 import globals
 from helper.loaders import load_image
+from helper import vector
 from animsprite import AnimatedSprite
 
 class Character(AnimatedSprite):
@@ -23,7 +24,7 @@ class Character(AnimatedSprite):
         AnimatedSprite.__init__(self, spritesheet_name, globals.CHARACTER_WIDTH, globals.CHARACTER_HEIGHT, animation_info_hash, 'down_idle')
 
         self.name = name
-        self.position = position
+        self.position = position # should be integered in rect, at least for group draws, or won't work
         self.direction = 'down'
         self.rect = pg.rect.Rect(position[0], position[1], globals.CHARACTER_WIDTH, globals.CHARACTER_HEIGHT) # will change
         self.speed = max_speed
@@ -36,10 +37,10 @@ class Character(AnimatedSprite):
 
 
 
-    def update(self):
+    def update(self, adventure_state):
         
         # peut-Ãªtre dÃ©placer plus de traitement du cÃ´tÃ© handle_event
-        horizontal_move, vertical_move = self.get_next_move()
+        horizontal_move, vertical_move = self.get_next_move(adventure_state)
 
         if vertical_move != 0 or horizontal_move != 0:
             self.move((horizontal_move, vertical_move))
@@ -86,7 +87,7 @@ class Character(AnimatedSprite):
         # a ghost character is created... is it worthy?
         ghost = Ghost(self.position[0] + direction[0], self.position[1] + direction[1])
         
-        print(self.name + " va tester ghost")
+        # print(self.name + " va tester ghost")
 
         if len(pg.sprite.spritecollide(ghost, globals.obstacle, False))!=0:
             return
@@ -94,7 +95,7 @@ class Character(AnimatedSprite):
         new_x = self.position[0] + direction[0]
         new_y = self.position[1] + direction[1]
 
-        print(self.name + " va tester direction")
+        # print(self.name + " va tester direction")
         
         if collision != True:
 
@@ -128,11 +129,11 @@ class Character(AnimatedSprite):
 #         ghost = Character(image_path = None, position = [self.position[0] + direction[0], self.position[1] + direction[1]], max_life=1, atk=1, max_speed=1)
         
 #         if len(pg.sprite.spritecollide(ghost, globals.obstacle, False))!=0:
-#             #return     problème : arrète le personnage sur son image courante
+#             #return     probl?me : arr?te le personnage sur son image courante
             
 #             collision = True
             
-#             #Affiche un personnage à l'arrêt
+#             #Affiche un personnage ? l'arr?t
 #             #self.cpt = 0 
         
         
@@ -146,7 +147,7 @@ class Character(AnimatedSprite):
 #             new_x = self.position[0] + direction[0]
 #             new_y = self.position[1] + direction[1]
             
-#         #déterminition quant la colonne du sprite à afficher
+#         #d?terminition quant la colonne du sprite ? afficher
 #         t=self.cpt%40
 #         if t<10:
 #             self.j_image = 0
@@ -157,7 +158,7 @@ class Character(AnimatedSprite):
 #         else:
 #             self.j_image = 3
 
-#         #déterminition de la ligne du sprite à afficher
+#         #d?terminition de la ligne du sprite ? afficher
 #         if direction[1]>0:
 #             #self.image = self.images[0][0]
 #             self.i_image = 0
@@ -173,7 +174,7 @@ class Character(AnimatedSprite):
 #             self.i_image = 3
         
         
-#         #actualisation de la position et du sprite affiché        
+#         #actualisation de la position et du sprite affich?        
 #         self.position = [new_x, new_y]
 #         # print("moves to: ", self.position)
 # ##        print("image chargÃ©e : ", ind, frame)
@@ -186,7 +187,7 @@ class Character(AnimatedSprite):
 
     def get_next_move(self):
         """Renvoie la direction du mouvement sur cet update"""
-        print("à préciser en classe concrète !")
+        print("? pr?ciser en classe concr?te !")
 
     def reset_state(self):
                             
@@ -228,13 +229,52 @@ class Hero(Character):
 
     def __init__(self, name, position, max_life = 100, atk = 10, max_speed = 2):
         Character.__init__(self, name, "charset1.png", position, max_life, atk, max_speed)
+        self.target = None # prochaine position o? le personnage doit se diriger (sur clic)
 
+    def update(self, adventure_state):
+        
+        # d?placement continu sur un clic gauche prolong?
+        if adventure_state.mouse_buttons['left']:
+            # v?rifier si la position recherch?e est "convenable"
+            self.target = adventure_state.mouse_buttons['left']
 
-    def get_next_move(self):
+        if self.target is not None:
+            self._step_to(self.target) # ou move_to avec m?moire
+            # si le perso est assez proche de sa cible, arr?ter le mouvement
+            if vector.distance(self.position, self.target) < 5:
+                self.target = None
+
+        # if vertical_move != 0 or horizontal_move != 0:
+        #     self.move((horizontal_move, vertical_move))
+        # else:
+        #     self.state = 0 # on passe en idle
+        #     self.change_animation(self.direction + '_idle')
+        # oops, une ligne ne reprÃ©senta pas un Ã©tat pour un perso car "immobile" et "marche"
+        # sont sur la mÃªme ligne... il faut adapter animatedsprite!
+
+        AnimatedSprite.update(self) # update l'animation en cours
+
+    def get_next_move(self, adventure_state): # uniformiser les prototypes ?
         """Renvoie la direction du mouvement sur cet update"""
-        vertical_move = 1 if globals.keyPressed['down'] else -1 if globals.keyPressed['up'] else 0
-        horizontal_move = 1 if globals.keyPressed['right'] else -1 if globals.keyPressed['left'] else 0
-        return (horizontal_move, vertical_move)
+        # vertical_move = 1 if globals.keyPressed['down'] else -1 if globals.keyPressed['up'] else 0
+        # horizontal_move = 1 if globals.keyPressed['right'] else -1 if globals.keyPressed['left'] else 0
+        # return (horizontal_move, vertical_move)
+
+    def _step_to(self, target): # beta
+        if target[0] > self.position[0]: horizontal_move = 1
+        elif target[0] < self.position[0]: horizontal_move = -1
+        else: horizontal_move = 0
+
+        if target[1] > self.position[1]: vertical_move = 1
+        elif target[1] < self.position[1]: vertical_move = -1
+        else: vertical_move = 0
+
+        if vertical_move != 0 or horizontal_move != 0:
+            self.move((horizontal_move, vertical_move))
+        else:
+            self.state = 0 # on passe en idle
+            self.change_animation(self.direction + '_idle')
+
 
 
 class Enemy(Character):
@@ -245,7 +285,7 @@ class Enemy(Character):
         globals.enemies.add(self) # Ã  mettre dans le gamestate
         print(globals.enemies)
 
-    def get_next_move(self):
+    def get_next_move(self, adventure_state):
         """Renvoie la direction du mouvement sur cet update"""
         return (0,1)
 

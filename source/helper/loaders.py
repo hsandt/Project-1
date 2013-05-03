@@ -20,6 +20,8 @@ def load_image(name, colorkey=None, size=None):
 				colorkey = image.get_at((0,0))
 				# print(colorkey)
 			image.set_colorkey(colorkey, pygame.RLEACCEL)
+		else:
+			image.convert_alpha()
 
 		# added resizing functionality
 		if size is not None:
