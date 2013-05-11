@@ -9,4 +9,3 @@ class StaticSprite(pygame.sprite.Sprite):
         self.image = image
         # self.image = load_image(image_name)
         self.rect = pygame.Rect(position, self.image.get_size())
-        

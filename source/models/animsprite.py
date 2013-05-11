@@ -1,4 +1,4 @@
-# -*- coding: Latin-1 -*
+# -*- coding: utf-8 -*-
 
 from pygame import sprite, Rect # not sure it's good practice to import a module and a sub-module at the same time...
 from helper.loaders import load_image
@@ -9,7 +9,7 @@ class AnimatedSprite(sprite.Sprite):
     def __init__(self, spritesheet_name, sprite_width, sprite_height, animation_info_hash, init_animation_name):
         """
         Initialise un sprite animé depuis le spritesheet 'spritesheet_name' avec des sprites de dimension (sprite_width, sprite_height)
-        
+
         Le sprite animé est composé de différentes 'animations' basées sur le spritesheet suivant le paramètre 'animation_info_hash'.
         'animation_info_hash' est un hash dont chaque entrée correspond aux infos d'une animation. Chaque entrée est décrite comme suit :
         - une clé donnant le nom de l'animation (marche haut, immobile droite...)
@@ -29,7 +29,7 @@ class AnimatedSprite(sprite.Sprite):
         """
 
         sprite.Sprite.__init__(self)
-        
+
         # pour l'instant, si le chargement échoue, on exit...
         # pas très correct, mieux vaut faire un raise dans load_image()
         # et le récupérer dans une clause try ici

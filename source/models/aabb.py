@@ -1,4 +1,4 @@
-# -*-coding:Latin-1 -*
+# -*- coding: utf-8 -*-
 
 # import unittest
 
@@ -23,7 +23,7 @@ class AABB():
         and the normal vector of the collision side as a tuple ((0,0) if no collision)
 
         """
-        
+
         if box1.vx > 0:
             # if collision is to happen on the right of box1
             # if box2 is actually on the left, dist will be negative ('box1 had collided box2 in the past')
@@ -32,7 +32,7 @@ class AABB():
             x_exit_dist = (box2.x + box2.w) - box1.x # get far sides distance
         else:
             # collision left to box1: use algebric distances (negative here)
-            x_entry_dist = (box2.x + box2.w) - box1.x 
+            x_entry_dist = (box2.x + box2.w) - box1.x
             x_exit_dist = box2.x - (box1.x + box1.w)
 
         if box1.vy > 0:
@@ -41,7 +41,7 @@ class AABB():
             y_exit_dist = (box2.y + box2.h) - box1.y # get far sides distance
         else:
             # collision left to box1: use algebric distances (negative here)
-            y_entry_dist = (box2.y + box2.h) - box1.y 
+            y_entry_dist = (box2.y + box2.h) - box1.y
             y_exit_dist = box2.y - (box1.y + box1.h)
 
         if box1.vx == 0:
